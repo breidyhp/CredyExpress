@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CREDY EXPRESS - Solicitud de Préstamo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #3498db, #2ecc71);
+        }
+        .form-container {
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 2.5rem;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 3rem;
+            font-weight: bold;
+            color: #e74c3c;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            background-color: #f8f9fa;
+            transition: border 0.3s;
+        }
+        input:focus, select:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+        }
+        .row {
+            display: flex;
+            gap: 20px;
+        }
+        .col {
+            flex: 1;
+        }
+        button {
+            background: linear-gradient(to right, #3498db, #2ecc71);
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+        }
+        .result-box {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-left: 5px solid #3498db;
+        }
+        .currency-converter {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .currency-converter input {
+            flex: 1;
+        }
+        .currency-converter span {
+            white-space: nowrap;
+            font-weight: bold;
+        }
+        .admin-panel {
+            margin-top: 40px;
+            border-top: 2px solid #eee;
+            padding-top: 20px;
+        }
+        .admin-panel h2 {
+            color: #e74c3c;
+        }
+        .tax-info {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-top: 5px;
+            font-style: italic;
+        }
+        .slider-container {
+            margin-top: 15px;
+        }
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 10px;
+            border-radius: 5px;
+            background: #ddd;
+            outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #3498db;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        input[type="range"]::-webkit-slider-thumb:hover {
+            background: #2980b9;
+            transform: scale(1.1);
+        }
+        .amount-display {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+            text-align: center;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <div class="logo">CREDY EXPRESS</div>
+        <h1>Solicitud de Préstamo Rápido</h1>
+        
+        <form id="loanForm">
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="firstName">Nombres:</label>
+                        <input type="text" id="firstName" name="firstName" required>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label for="lastName">Apellidos:</label>
+                        <input type="text" id="lastName" name="lastName" required>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Correo Electrónico:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="country">País:</label>
+                        <select id="country" name="country" required onchange="updateCountryCode()">
+                            <option value="">Seleccione su país</option>
+                            <!-- Países Latinoamérica -->
+                            <option value="AR" data-code="54">Argentina</option>
+                            <option value="BO" data-code="591">Bolivia</option>
+                            <option value="BR" data-code="55">Brasil</option>
+                            <option value="CL" data-code="56">Chile</option>
+                            <option value="CO" data-code="57">Colombia</option>
+                            <option value="CR" data-code="506">Costa Rica</option>
+                            <option value="CU" data-code="53">Cuba</option>
+                            <option value="DO" data-code="1">República Dominicana</option>
+                            <option value="EC" data-code="593">Ecuador</option>
+                            <option value="SV" data-code="503">El Salvador</option>
+                            <option value="GT" data-code="502">Guatemala</option>
+                            <option value="HT" data-code="509">Haití</option>
+                            <option value="HN" data-code="504">Honduras</option>
+                            <option value="MX" data-code="52">México</option>
+                            <option value="NI" data-code="505">Nicaragua</option>
+                            <option value="PA" data-code="507">Panamá</option>
+                            <option value="PY" data-code="595">Paraguay</option>
+                            <option value="PE" data-code="51">Perú</option>
+                            <option value="PR" data-code="1">Puerto Rico</option>
+                            <option value="UY" data-code="598">Uruguay</option>
+                            <option value="VE" data-code="58">Venezuela</option>
+                            
+                            <!-- Estados Unidos y Europa -->
+                            <option value="US" data-code="1">Estados Unidos</option>
+                            <option value="ES" data-code="34">España</option>
+                            <option value="FR" data-code="33">Francia</option>
+                            <option value="DE" data-code="49">Alemania</option>
+                            <option value="IT" data-code="39">Italia</option>
+                            <option value="UK" data-code="44">Reino Unido</option>
+                            <option value="PT" data-code="351">Portugal</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label for="phoneCode">Código de País:</label>
+                        <input type="text" id="phoneCode" name="phoneCode" readonly>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="phone">Número de Teléfono:</label>
+                <input type="tel" id="phone" name="phone" required>
+            </div>
+            
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="city">Ciudad:</label>
+                        <input type="text" id="city" name="city" required>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label for="address">Dirección:</label>
+                        <input type="text" id="address" name="address" required>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="loanAmount">Monto del Préstamo:</label>
+                <div class="slider-container">
+                    <input type="range" id="loanAmount" name="loanAmount" min="5000" max="300000" step="1000" value="5000" oninput="updateLoanDetails()">
+                </div>
+                <div class="amount-display">
+                    <span id="loanAmountValue">$5,000 USD</span>
+                    <div id="localCurrencyValue" style="font-size: 16px;"></div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="loanTerm">Plazo de Pago:</label>
+                <select id="loanTerm" name="loanTerm" onchange="updateLoanDetails()">
+                    <option value="1">1 año (7% interés)</option>
+                    <option value="2">2 años (8% interés)</option>
+                    <option value="3">3 años (9% interés)</option>
+                    <option value="4">4 años (10% interés)</option>
+                    <option value="5">5 años (11% interés)</option>
+                    <option value="6">6 años (12% interés)</option>
+                </select>
+            </div>
+            
+            <div class="result-box">
+                <h3>Detalles del Préstamo</h3>
+                <p><strong>Pago Mensual Estimado:</strong> <span id="monthlyPayment">$</span></p>
+                <p><strong>Interés Total:</strong> <span id="totalInterest">$</span></p>
+                <p><strong>Total a Pagar:</strong> <span id="totalPayment">$</span></p>
+                <p><strong>Impuesto de Aprobación (10%):</strong> <span id="approvalTax">$</span></p>
+                <p class="tax-info">* El impuesto de aprobación será reembolsado en su totalidad una vez que salde la deuda del préstamo.</p>
+            </div>
+            
+            <h3>Referencias Personales</h3>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="ref1Name">Nombre Referencia 1:</label>
+                        <input type="text" id="ref1Name" name="ref1Name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ref1Phone">Teléfono Referencia 1:</label>
+                        <input type="tel" id="ref1Phone" name="ref1Phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ref1Relation">Relación:</label>
+                        <input type="text" id="ref1Relation" name="ref1Relation" required>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label for="ref2Name">Nombre Referencia 2:</label>
+                        <input type="text" id="ref2Name" name="ref2Name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ref2Phone">Teléfono Referencia 2:</label>
+                        <input type="tel" id="ref2Phone" name="ref2Phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ref2Relation">Relación:</label>
+                        <input type="text" id="ref2Relation" name="ref2Relation" required>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <button type="submit">Enviar Solicitud</button>
+            </div>
+        </form>
+        
+        <div class="admin-panel" id="adminPanel" style="display: none;">
+            <h2>Panel de Administración</h2>
+            <div id="applicationsList"></div>
+        </div>
+    </div>
+
+    <script>
+        // Tasas de cambio aproximadas (deberías usar una API real para esto)
+        const exchangeRates = {
+            'AR': 1000, // Peso Argentino
+            'MX': 20,   // Peso Mexicano
+            'CO': 4000, // Peso Colombiano
+            'CL': 900,  // Peso Chileno
+            'PE': 3.8,  // Sol Peruano
+            'ES': 0.93, // Euro
+            'US': 1,    // Dólar
+            'BR': 5.2,  // Real Brasileño
+            // Agrega más tasas de cambio según necesites
+        };
+        
+        function updateCountryCode() {
+            const countrySelect = document.getElementById('country');
+            const phoneCodeInput = document.getElementById('phoneCode');
+            const selectedOption = countrySelect.options[countrySelect.selectedIndex];
+            
+            if (selectedOption.value) {
+                phoneCodeInput.value = `+${selectedOption.getAttribute('data-code')}`;
+                updateCurrencyConversion();
+            } else {
+                phoneCodeInput.value = '';
+            }
+        }
+        
+        function updateLoanDetails() {
+            const loanAmount = parseInt(document.getElementById('loanAmount').value);
+            const loanTerm = parseInt(document.getElementById('loanTerm').value);
+            const interestRate = 6 + loanTerm; // 7% base + 1% por año
+            
+            document.getElementById('loanAmountValue').textContent = `$${loanAmount.toLocaleString()} USD`;
+            
+            // Calcular pago mensual usando fórmula de préstamo amortizado
+            const monthlyRate = interestRate / 100 / 12;
+            const payments = loanTerm * 12;
+            const monthlyPayment = (loanAmount * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -payments));
+            
+            const totalPayment = monthlyPayment * payments;
+            const totalInterest = totalPayment - loanAmount;
+            const approvalTax = loanAmount * 0.1;
+            
+            document.getElementById('monthlyPayment').textContent = `$${monthlyPayment.toFixed(2)}`;
+            document.getElementById('totalInterest').textContent = `$${totalInterest.toFixed(2)}`;
+            document.getElementById('totalPayment').textContent = `$${totalPayment.toFixed(2)}`;
+            document.getElementById('approvalTax').textContent = `$${approvalTax.toFixed(2)}`;
+            
+            updateCurrencyConversion();
+        }
+        
+        function updateCurrencyConversion() {
+            const countrySelect = document.getElementById('country');
+            const countryCode = countrySelect.value;
+            const loanAmount = parseInt(document.getElementById('loanAmount').value);
+            const localCurrencyValue = document.getElementById('localCurrencyValue');
+            
+            if (countryCode && exchangeRates[countryCode]) {
+                const convertedAmount = loanAmount * exchangeRates[countryCode];
+                localCurrencyValue.textContent = `(${convertedAmount.toLocaleString()} ${getCurrencySymbol(countryCode)})`;
+            } else {
+                localCurrencyValue.textContent = '';
+            }
+        }
+        
+        function getCurrencySymbol(countryCode) {
+            const symbols = {
+                'AR': 'ARS', 'MX': 'MXN', 'CO': 'COP', 'CL': 'CLP',
+                'PE': 'PEN', 'ES': 'EUR', 'US': 'USD', 'BR': 'BRL',
+                'EC': 'USD', 'CR': 'CRC', 'DO': 'DOP', 'GT': 'GTQ',
+                'HN': 'HNL', 'NI': 'NIO', 'PA': 'PAB', 'PY': 'PYG',
+                'UY': 'UYU', 'VE': 'USD', 'UK': 'GBP', 'FR': 'EUR',
+                'DE': 'EUR', 'IT': 'EUR', 'PT': 'EUR'
+            };
+            return symbols[countryCode] || '';
+        }
+        
+        // Mostrar panel de admin si el parámetro ?admin está en la URL
+        if (window.location.search.includes('?admin')) {
+            document.getElementById('adminPanel').style.display = 'block';
+            // Aquí iría el código para cargar las solicitudes pendientes
+        }
+        
+        // Inicializar valores
+        updateLoanDetails();
+        
+        // Manejar envío del formulario
+        document.getElementById('loanForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Solicitud enviada con éxito. Nos pondremos en contacto contigo pronto.');
+            // Aquí iría el código para guardar la solicitud en una base de datos
+        });
+    </script>
+</body>
+</html>
